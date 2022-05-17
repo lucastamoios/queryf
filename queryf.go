@@ -49,7 +49,7 @@ func format(arg any) string {
 		return format(v)
 	} else if isTime(arg) {
 		t, _ := arg.(time.Time)
-		return t.Format(time.RFC3339)
+		return format(t.Format(time.RFC3339))
 	} else if isString(arg) {
 		s, _ := arg.(string)
 		return fmt.Sprintf("'%s'", s)
