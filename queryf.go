@@ -9,7 +9,11 @@ import (
 )
 
 func isNull(arg any) bool {
-	return arg == nil
+	return arg == nil || (reflect.ValueOf(arg).Kind() == reflect.Ptr && reflect.ValueOf(arg).IsNil())
+}
+
+func isPtr(arg any) bool {
+	return reflect.ValueOf(arg).Kind() == reflect.Ptr
 }
 
 func isTime(arg any) bool {
@@ -38,27 +42,27 @@ func sliceToString(input []any) string {
 }
 
 func format(arg any) string {
-	replaceTo := ""
 	if isNull(arg) {
-		replaceTo = "NULL"
+		return "NULL"
+	} else if isPtr(arg) {
+		v := reflect.ValueOf(arg).Elem()
+		return format(v)
 	} else if isTime(arg) {
 		t, _ := arg.(time.Time)
-		replaceTo = t.Format(time.RFC3339)
+		return t.Format(time.RFC3339)
 	} else if isString(arg) {
 		s, _ := arg.(string)
-		replaceTo = fmt.Sprintf("'%s'", s)
+		return fmt.Sprintf("'%s'", s)
 	} else if isSlice(arg) {
-		replaceTo = sliceToString(arg.([]any))
+		return sliceToString(arg.([]any))
 	} else if isBoolean(arg) {
 		b, _ := arg.(bool)
-		replaceTo = "false"
 		if b {
-			replaceTo = "true"
+			return "true"
 		}
-	} else {
-		replaceTo = fmt.Sprintf("%v", arg)
+		return "false"
 	}
-	return replaceTo
+	return fmt.Sprintf("%v", arg)
 }
 
 func Print(query string, args ...any) string {
