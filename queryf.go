@@ -55,6 +55,8 @@ func format(arg any) string {
 		if b {
 			replaceTo = "true"
 		}
+	} else {
+		replaceTo = fmt.Sprintf("%v", arg)
 	}
 	return replaceTo
 }
