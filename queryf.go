@@ -33,12 +33,13 @@ func isSlice(arg any) bool {
 	return reflect.TypeOf(arg).Kind() == reflect.Slice
 }
 
-func sliceToString(input []any) string {
+func sliceToString(input any) string {
 	var result []string
-	for _, arg := range input {
-		result = append(result, format(arg))
+	listVal := reflect.ValueOf(input)
+	for i := 0; i < listVal.Len(); i++ {
+		result = append(result, format(listVal.Index(i).Interface()))
 	}
-	return fmt.Sprintf("{%s}", strings.Join(result, ","))
+	return fmt.Sprintf("'{%s}'", strings.Join(result, ","))
 }
 
 func format(arg any) string {
@@ -54,7 +55,7 @@ func format(arg any) string {
 		s, _ := arg.(string)
 		return fmt.Sprintf("'%s'", s)
 	} else if isSlice(arg) {
-		return sliceToString(arg.([]any))
+		return sliceToString(arg)
 	} else if isBoolean(arg) {
 		b, _ := arg.(bool)
 		if b {

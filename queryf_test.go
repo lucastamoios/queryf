@@ -20,6 +20,10 @@ func (suite *QueryfTestSuite) TestResult() {
 	t, err := time.Parse(time.RFC3339, "2022-02-10T00:00:00Z")
 	suite.Nil(err)
 	suite.Equal(Print(`SELECT $1`, t), `SELECT '2022-02-10T00:00:00Z'`)
+	type Int64Slice []int64
+	a := Int64Slice{1, 2, 3}
+	suite.Equal(Print(`SELECT $1`, a), `SELECT '{1,2,3}'`)
+
 }
 
 func TestQueryfTestSuite(t *testing.T) {
