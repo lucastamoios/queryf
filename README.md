@@ -1,15 +1,24 @@
 Queryf
 ======
 
+
 This is a simple project to enable printing Go SQL queries into strings for debugging reasons.
 
-**Attention**: You should not use it to make requests to the database, to do that you should bind the parameters.
+**Attention**: This is not meant to be used in production. To avoid SQL injections you should
+bind the parameters usign the `database/sql` package. Read more about it
+[here](https://use-the-index-luke.com/sql/where-clause/bind-parameters).
 
 Usage
 -----
-To use you need just to assign the Print the variable to a string then print it to console:
+
+To use this package just get the resulting string from the `Format` function. After that you
+can print it or do whatever you want with it.
+
+Example:
 
 ```golang
-printedQuery := queryf.Print(query, args...)
-fmt.Println(printedQuery)
+query := "SELECT * FROM users WHERE id = $1 AND name = $2"
+args := []any{1, "John"}
+fmt.Println(queryf.Format(query, args...))
+// Output: SELECT * FROM users WHERE id = 1 AND name = 'John'
 ```
